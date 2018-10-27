@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Annotation</string>
+    <string name="action_font_size">Set font size</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="image_description">An image</string>
+    <string name="transition_name">Transition</string>
+</resources>
