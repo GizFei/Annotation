@@ -82,7 +82,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/annotation_container"
             android:layout_width="match_parent"
-            android:layout_height="320dp"
+            android:layout_height="280dp"
             android:padding="@dimen/small"
             app:cardElevation="@dimen/small"
             app:cardCornerRadius="@dimen/small"

@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.giztk.annotation.ContentFragment;
-import com.giztk.annotation.RelationFragment;
+import com.giztk.annotation.TripleFragment;
 
 public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
 
@@ -24,7 +24,7 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
         if(i == 0){
             return ContentFragment.newInstance();
         }else if(i == 1){
-            return RelationFragment.newInstance();
+            return TripleFragment.newInstance();
         }else{
             return null;
         }

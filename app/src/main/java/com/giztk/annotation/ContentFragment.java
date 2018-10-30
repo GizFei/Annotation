@@ -100,33 +100,41 @@ public class ContentFragment extends Fragment {
             }
         });
 
-        mTitleText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                letItBigBang();
-            }
-        });
-
         mNextFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2018/10/29 询问不提交吗?
-                EntityAnnotation.getInstance().clear();
-                updateEntityRv();
-                queryContent();
+                if(EntityAnnotation.getInstance().getEntityList().size() > 0){
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("不提交当前标注结果吗")
+                            .setPositiveButton("提交", null)
+                            .setNegativeButton("不提交", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    EntityAnnotation.getInstance().clear();
+                                    updateEntityRv();
+                                    queryContent();
+                                }
+                            }).show();
+                }else{
+//                    EntityAnnotation.getInstance().clear();
+//                    updateEntityRv();
+                    queryContent();
+                }
             }
         });
 
         mFinishFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2018/10/29 提交标注结果
+                if(EntityAnnotation.getInstance().getEntityList().size() == 0){
+                    Toast.makeText(getContext(), "还没标注呢", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 try {
                     JSONObject object = EntityAnnotation.getInstance().getEntityResult(mEntityObject.docId,
                             mEntityObject.sentId);
                     uploadEntity(object.toString());
                     Log.d(TAG, object.toString());
-                    Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -158,9 +166,17 @@ public class ContentFragment extends Fragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject r = new JSONObject(response);
-                            EntityAnnotation.getInstance().clear();
-                            updateEntityRv();
-                            // TODO: 2018/10/30 上传成功后自动跳转下一页
+                            String msg = r.getString("msg");
+                            if(msg.equals("上传成功")){
+                                Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
+                                // 清除已提交的标注信息
+                                EntityAnnotation.getInstance().clear();
+                                updateEntityRv();
+                                // 上传成功后自动跳转下一页
+                                queryContent();
+                            }else{
+                                Toast.makeText(getContext(), "提交失败", Toast.LENGTH_SHORT).show();
+                            }
                             Log.d(TAG, "upload response" + r.toString(4));
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -176,7 +192,7 @@ public class ContentFragment extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", HttpUtil.getToken());
-                params.put("entity", result);
+                params.put("entities", result);
                 return params;
             }
         };
@@ -198,16 +214,13 @@ public class ContentFragment extends Fragment {
         startActivityForResult(intent, BANG_REQUEST, options.toBundle());
     }
 
-    public void changeFontSize(float size){
-        mContentText.setTextSize(size);
-    }
-
     private void queryContent(){
         StringRequest request = new StringRequest(Request.Method.POST, HttpUtil.getGetEntityUrl(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            Log.d(TAG, response);
                             JSONObject object = new JSONObject(response);
                             mEntityObject = new EntityObject(object);
                             mTitleText.setText(mEntityObject.title);
@@ -226,6 +239,7 @@ public class ContentFragment extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("token", HttpUtil.getToken());
+                Log.d(TAG, params.toString());
                 return params;
             }
         };
@@ -249,11 +263,13 @@ public class ContentFragment extends Fragment {
                 content = entity.getString("content");
                 docId = entity.getString("doc_id");
                 sentId = entity.getInt("sent_id");
+                mContentText.setClickable(true);
             } catch (JSONException e) {
                 title = "标题";
-                content = "内容";
+                content = "请求错误，点击下一段按钮重试";
                 docId = "DOC_ID";
                 sentId = -1;
+                mContentText.setClickable(false);
                 e.printStackTrace();
             }
         }
