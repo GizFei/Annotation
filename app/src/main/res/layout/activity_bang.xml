@@ -18,7 +18,7 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/double_large"
+        android:layout_margin="@dimen/large"
         android:layout_gravity="center"
         android:transitionName="@string/transition_name"
         app:cardElevation="@dimen/double_huge">
@@ -32,20 +32,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="@dimen/normal"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="outsideInset"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bang_tool">
 
             </android.support.v7.widget.RecyclerView>
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
                 android:id="@+id/bang_tool"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/colorPrimary"
+                android:background="@color/gray"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/bang_entity_person"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/normal"
+                    android:text="人名"
+                    android:drawableTop="@drawable/ic_entity_person"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <TextView
+                    android:id="@+id/bang_entity_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/normal"
+                    android:text="职位"
+                    android:drawableTop="@drawable/ic_entity_status"
+                    app:layout_constraintStart_toEndOf="@id/bang_entity_person"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/bang_entity_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/normal"
+                    android:text="完成"
+                    android:drawableTop="@drawable/ic_entity_done"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
 
         </android.support.constraint.ConstraintLayout>
 

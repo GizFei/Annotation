@@ -10,7 +10,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:textColor="@android:color/black"
         android:layout_marginTop="@dimen/normal"
         android:text="调整字体"
@@ -29,6 +29,7 @@
         app:layout_constraintTop_toBottomOf="@id/title"/>
 
     <TextView
+        android:id="@+id/min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="16"
@@ -43,6 +44,17 @@
         android:layout_marginEnd="@dimen/small"
         app:layout_constraintEnd_toEndOf="@id/slider"
         app:layout_constraintTop_toBottomOf="@id/slider"/>
+
+    <TextView
+        android:id="@+id/model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="模板"
+        android:textSize="16sp"
+        android:layout_marginStart="@dimen/small"
+        app:layout_constraintTop_toBottomOf="@id/min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/ok"

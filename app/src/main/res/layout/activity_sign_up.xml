@@ -85,11 +85,43 @@
         android:paddingStart="@dimen/large"
         android:paddingEnd="0dp"
         android:drawableEnd="@drawable/ic_signin_password"
+        android:inputType="textPassword"
         android:hint="密码"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sign_up_email" />
+
+    <EditText
+        android:id="@+id/sign_up_password2"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/double_large"
+        android:layout_marginTop="@dimen/normal"
+        android:layout_marginEnd="@dimen/double_large"
+        android:background="@drawable/et_round_shape"
+        android:paddingStart="@dimen/large"
+        android:paddingEnd="0dp"
+        android:inputType="textPassword"
+        android:hint="密码"
+        android:drawableEnd="@drawable/ic_signin_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sign_up_password" />
+
+    <TextView
+        android:id="@+id/error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="这里显示错误信息"
+        android:textSize="16sp"
+        android:textColor="@android:color/holo_red_light"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sign_up_password2"/>
 
     <Button
         android:id="@+id/btn_sign_up"
@@ -98,11 +130,11 @@
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/huge"
         android:layout_marginEnd="@dimen/huge"
-        android:layout_marginBottom="@dimen/double_huge"
         android:text="注册"
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:background="@drawable/btn_sign_in"
+        app:layout_constraintTop_toBottomOf="@id/error_text"
         app:layout_constraintStart_toStartOf="@id/sign_up_password"
         app:layout_constraintEnd_toEndOf="@id/sign_up_password"
         app:layout_constraintBottom_toBottomOf="parent"/>

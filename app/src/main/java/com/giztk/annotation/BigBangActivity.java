@@ -1,29 +1,50 @@
 package com.giztk.annotation;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.giztk.util.EntityAnnotation;
 import com.giztk.util.TextUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class BigBangActivity extends AppCompatActivity {
+    //TODO 英文人名合并
 
+    private static final String TAG = "BigBangActivity";
     private static final String EXTRA_CONTENT = "extra_content";
 
     private RecyclerView mRecyclerView;
     private CharacterAdapter mAdapter;
     private View mScrim;
+    private TextView mEntityPersonBtn;
+    private TextView mEntityStatusBtn;
+    private TextView mEntityDoneBtn;
+
+    private List<Integer> mSelectedCharIndexList;
+    private List<Character> mCharacterList;
+    private List<String> mChars;
 
     /**
      * 初始化进入该活动的Intent
@@ -43,16 +64,52 @@ public class BigBangActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bang);
 
         // 初始化列表实例
+        mCharacterList = new ArrayList<>();
         mRecyclerView = findViewById(R.id.bang_chars);
         mRecyclerView.setLayoutManager(new GridLayoutManager(BigBangActivity.this, 8));
-        mAdapter = new CharacterAdapter(TextUtil.splitSentence(getIntent().getStringExtra(EXTRA_CONTENT)));
+        mChars = TextUtil.splitSentence(getIntent().getStringExtra(EXTRA_CONTENT));
+        for(int i = 0; i < mChars.size(); i++){
+            Character character = new Character();
+            character.mChar = mChars.get(i);
+            character.index = i;
+            mCharacterList.add(character);
+        }
+        initMarkSituation();
+        mAdapter = new CharacterAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
         // 初始化遮罩
         mScrim = findViewById(R.id.scrim);
+        // 初始化已选择的单字索引列表
+        mSelectedCharIndexList = new ArrayList<>();
+        // 初始化按钮
+        mEntityPersonBtn = findViewById(R.id.bang_entity_person);
+        mEntityStatusBtn = findViewById(R.id.bang_entity_status);
+        mEntityDoneBtn = findViewById(R.id.bang_entity_done);
 
         // 初始化事件
         initEvents();
+    }
+
+    // 初始化标注情况，防止重复标注
+    private void initMarkSituation(){
+        List<JSONObject> entityList = EntityAnnotation.getInstance().getEntityList();
+        if(entityList.size() != 0){
+            try {
+                for(int i = 0; i < entityList.size(); i++){
+                    int startOffset = entityList.get(i).getInt(EntityAnnotation.START);
+                    int endOffset = entityList.get(i).getInt(EntityAnnotation.END);
+                    String entityType = entityList.get(i).getString(EntityAnnotation.ENTITY_TYPE);
+                    int colorId = getEntityTypeColor(entityType);
+                    for(int j = startOffset; j < endOffset; j++){
+                        mCharacterList.get(j).isEnabled = false;
+                        mCharacterList.get(j).disabledColorId = colorId;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -60,10 +117,32 @@ public class BigBangActivity extends AppCompatActivity {
      */
     private void initEvents(){
         //设置遮罩点击事件
-        mScrim.setOnClickListener(new View.OnClickListener() {
+//        mScrim.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onBackPressed();
+//            }
+//        });
+
+        mEntityPersonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                handleEntity(EntityAnnotation.ENTITY_PERSON);
+            }
+        });
+
+        mEntityStatusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleEntity(EntityAnnotation.ENTITY_STATUS);
+            }
+        });
+
+        mEntityDoneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_OK, null);
+                finish();
             }
         });
     }
@@ -71,7 +150,7 @@ public class BigBangActivity extends AppCompatActivity {
     /**
      * 单字视图类
      */
-    private class CharacterHolder extends RecyclerView.ViewHolder{
+    private class CharacterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mCharView;
 
@@ -82,14 +161,53 @@ public class BigBangActivity extends AppCompatActivity {
         private CharacterHolder(View view){
             super(view);
             mCharView = itemView.findViewById(R.id.item_char);
+            itemView.setOnClickListener(this);
         }
 
-        /**
-         * 绑定视图，赋字
-         * @param text 单字
-         */
-        private void bind(String text){
-            mCharView.setText(text);
+        private void bind(int i){
+            Character c = mCharacterList.get(i);
+            mCharView.setText(c.mChar);
+//            Log.d(TAG, "bind " + String.valueOf(i));
+            if(!c.isEnabled){
+                // 无法选中状态
+                mCharView.setBackgroundResource(c.disabledColorId);
+                mCharView.setTextColor(Color.BLACK);
+                return;
+            }
+            if(c.isSelected){
+                // 选中状态
+                mCharView.setTextColor(Color.WHITE);
+                mCharView.setBackgroundResource(R.color.colorPrimary);
+            }else{
+                mCharView.setBackgroundResource(android.R.color.white);
+                mCharView.setTextColor(Color.BLACK);
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            int n = getAdapterPosition();
+            Log.d(TAG, String.valueOf(n));
+            Character c = mCharacterList.get(n);
+            if(!c.isEnabled){
+                return;
+            }
+            if(c.isSelected){
+                // 取消选中状态
+//                Log.d(TAG, "unselect" + String.valueOf(c.index));
+                mCharView.setBackgroundResource(android.R.color.white);
+                mCharView.setTextColor(Color.BLACK);
+                mSelectedCharIndexList.remove(Integer.valueOf(c.index));
+            }else{
+                // 选中状态
+//                Log.d(TAG, "select" + String.valueOf(c.index));
+                mCharView.setTextColor(Color.WHITE);
+                mCharView.setBackgroundResource(R.color.colorPrimary);
+                mSelectedCharIndexList.add(c.index);
+            }
+//            Log.d(TAG, String.valueOf(c.isSelected));
+            c.isSelected = !c.isSelected;
+//            Log.d(TAG, String.valueOf(mCharacterList.get(c.index).isSelected));
         }
     }
 
@@ -98,31 +216,151 @@ public class BigBangActivity extends AppCompatActivity {
      */
     private class CharacterAdapter extends RecyclerView.Adapter<CharacterHolder>{
 
-        private List<String> mChars;
-
-        /**
-         * 适配器构造函数
-         * @param chars 单字列表
-         */
-        private CharacterAdapter(List<String> chars){
-            mChars = chars;
-        }
-
         @NonNull
         @Override
         public CharacterHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            // i是类型
             View view = LayoutInflater.from(BigBangActivity.this).inflate(R.layout.item_character, viewGroup, false);
             return new CharacterHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull CharacterHolder characterHolder, int i) {
-            characterHolder.bind(mChars.get(i));
+            characterHolder.bind(i);
+//            characterHolder.setIsRecyclable(false);
         }
 
         @Override
         public int getItemCount() {
-            return mChars.size();
+            return mCharacterList.size();
         }
+
+        @Override
+        public int getItemViewType(int position) {
+            // 区别不同的view（一个个都是单独的）
+            return position;
+        }
+
+        @Override
+        public void onViewRecycled(@NonNull CharacterHolder holder) {
+            super.onViewRecycled(holder);
+        }
+    }
+
+    private class Character{
+        String mChar;
+        int index;
+        boolean isEnabled = true;
+        boolean isSelected = false;
+
+        int disabledColorId;
+    }
+
+    private void handleEntity(String entityType){
+        Collections.sort(mSelectedCharIndexList);
+        int length = mSelectedCharIndexList.size();
+        if (length == 0){
+            Toast.makeText(this, "未选词", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int endOffset = mSelectedCharIndexList.get(length-1);
+        int startOffset = mSelectedCharIndexList.get(0);
+        Log.d(TAG, "StartOffset" + String.valueOf(startOffset));
+        Log.d(TAG, "EndOffset" + String.valueOf(endOffset));
+        if((endOffset - startOffset) != (length-1)){
+            Toast.makeText(BigBangActivity.this, "选中的词要连续", Toast.LENGTH_SHORT).show();
+            for(Integer i: mSelectedCharIndexList){
+                Log.d(TAG, String.valueOf(i));
+                mCharacterList.get(i).isSelected = false;
+                mAdapter.notifyItemChanged(i);
+            }
+            mSelectedCharIndexList.clear();
+        }else{
+            int colorId = getEntityTypeColor(entityType);
+            for(int i: mSelectedCharIndexList){
+                mCharacterList.get(i).isSelected = false;
+                mCharacterList.get(i).isEnabled = false;
+                mCharacterList.get(i).disabledColorId = colorId;
+                mAdapter.notifyItemChanged(i);
+            }
+            String entityName = TextUtil.formEntity(mChars, startOffset, endOffset + 1);
+            String msg = EntityAnnotation.getInstance().add(entityName, entityType,
+                    startOffset, endOffset + 1);
+            switch (msg){
+                case EntityAnnotation.ENTITY_EXISTS:
+                    Toast.makeText(this, "亲，你已经标注过了。", Toast.LENGTH_SHORT).show();
+                    mSelectedCharIndexList.clear();
+                    break;
+                case EntityAnnotation.ENTITY_EXISTS_BUT_DIFF:
+                    Toast.makeText(this, "亲，你之前不是这么标注的。", Toast.LENGTH_SHORT).show();
+                    showChooseTypeDialog(entityName, startOffset, endOffset + 1);
+                    break;
+                case EntityAnnotation.ENTITY_ADD_SUCCESS:
+                    mSelectedCharIndexList.clear();
+                    break;
+                case EntityAnnotation.ENTITY_ADD_ERROR:
+                    mSelectedCharIndexList.clear();
+                    Toast.makeText(this, "添加标注错误。", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+//            Log.d(TAG, "entity name" + entity);
+        }
+    }
+
+    private void showChooseTypeDialog(final String entityName, final int startOffset, final int endOffset) {
+        // TODO: 2018/10/29 选择类型框
+        new AlertDialog.Builder(this)
+                .setTitle("请选择你要标注的类型")
+                .setNegativeButton("人名", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        updateWhileChooseNewType(EntityAnnotation.ENTITY_PERSON);
+                        EntityAnnotation.getInstance().add(entityName, EntityAnnotation.ENTITY_PERSON, startOffset, endOffset);
+                    }
+                }).setPositiveButton("职位", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                updateWhileChooseNewType(EntityAnnotation.ENTITY_STATUS);
+                EntityAnnotation.getInstance().add(entityName, EntityAnnotation.ENTITY_STATUS, startOffset, endOffset);
+            }
+        }).show();
+    }
+
+    private void updateWhileChooseNewType(String entityType){
+        try {
+            // 更新当前选择的类型
+            int colorId = getEntityTypeColor(entityType);
+            for(int i: mSelectedCharIndexList){
+                mCharacterList.get(i).isSelected = false;
+                mCharacterList.get(i).isEnabled = false;
+                mCharacterList.get(i).disabledColorId = colorId;
+                mAdapter.notifyItemChanged(i);
+            }
+            mSelectedCharIndexList.clear();
+
+            // 把之前重复的去年样式
+            JSONObject object = EntityAnnotation.getInstance().getRemovedObjectDueToDiff();
+            int startOffset = object.getInt(EntityAnnotation.START);
+            int endOffset = object.getInt(EntityAnnotation.END);
+            for(int i = startOffset; i < endOffset; i++){
+                mCharacterList.get(i).disabledColorId = android.R.color.white;
+                mAdapter.notifyItemChanged(i);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int getEntityTypeColor(String entityType){
+        int colorId = android.R.color.darker_gray;
+        switch (entityType){
+            case EntityAnnotation.ENTITY_PERSON:
+                colorId = R.color.entity_person;
+                break;
+            case EntityAnnotation.ENTITY_STATUS:
+                colorId = R.color.entity_status;
+                break;
+        }
+        return colorId;
     }
 }
