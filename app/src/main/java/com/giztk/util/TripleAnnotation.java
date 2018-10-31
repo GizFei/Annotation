@@ -22,6 +22,10 @@ public class TripleAnnotation {
     private String mSentContent;
     private List<Triple> mTriples;
 
+    /**
+     * 传入服务端返回的json对象，构造TripleAnnotation对象
+     * @param tripleObject 服务端返回的json对象
+     */
     public TripleAnnotation(JSONObject tripleObject){
         mTriples = new ArrayList<>();
         try{
@@ -79,55 +83,37 @@ public class TripleAnnotation {
         mTriples = triples;
     }
 
-    private class Triple{
-        String id;
-        int leftEStart;
-        int leftEENd;
-        int rightEStart;
-        int rightEEnd;
-        int relationStart;
-        int relationEnd;
-        String leftEntity;
-        String rightEntity;
-        int relationID;
-        int status;
+    // 添加新标注的Triple
+    public void addTriple(Triple t){
+        mTriples.add(t);
+    }
 
-        Triple(JSONObject object){
-            try {
-                id = object.getString("id");
-                leftEStart = object.getInt("left_e_start");
-                leftEENd = object.getInt("left_e_end");
-                rightEStart = object.getInt("right_e_start");
-                rightEEnd = object.getInt("right_e_end");
-                relationStart = object.getInt("relation_start");
-                relationEnd = object.getInt("relation_end");
-                leftEntity = object.getString("left_entity");
-                rightEntity = object.getString("right_entity");
-                relationID = object.getInt("relation_id");
-            } catch (JSONException e) {
-                e.printStackTrace();
+    // 更新原来的Triple
+    public void updateTriple(Triple t){
+        for(int i = 0; i < mTriples.size(); i++){
+            if(mTriples.get(i).getId().equals(t.getId())){
+                mTriples.set(i, t);
+                break;
             }
         }
+    }
 
-        JSONObject toJSONObject(){
-            try {
-                JSONObject object = new JSONObject();
-                object.put("id", id);
-                object.put("left_e_start", leftEStart);
-                object.put("left_e_end", leftEENd);
-                object.put("right_e_start", rightEStart);
-                object.put("right_e_end", rightEEnd);
-                object.put("relation_start", relationStart);
-                object.put("relation_end", relationEnd);
-                object.put("left_entity", leftEntity);
-                object.put("right_entity", rightEntity);
-                object.put("relation_id", relationID);
-                object.put("status", status);
-                return object;
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
+    public String toJSONString(){
+        try {
+            JSONObject result = new JSONObject();
+            result.put(TRIPLE_DOC_ID, mDocId);
+            result.put(TRIPLE_SENT_ID, mSentId);
+            result.put(TRIPLE_TITLE, mTitle);
+            result.put(TRIPLE_SENT_CTX, mSentContent);
+            JSONArray array = new JSONArray();
+            for(Triple triple: mTriples){
+                array.put(triple.toJSONObject());
             }
+            result.put(TRIPLE_TRIPLES, array);
+            return result.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
         }
     }
 }
