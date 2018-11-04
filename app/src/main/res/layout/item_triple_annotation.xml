@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.chauthai.swipereveallayout.SwipeRevealLayout
+        android:id="@+id/swipe_rl"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:mode="same_level"
+        app:dragEdge="right"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/divider2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 副布局 -->
+        <FrameLayout
+            android:layout_width="112dp"
+            android:layout_height="56dp">
+
+            <ImageView
+                android:id="@+id/triple_correct"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="#64DD17"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/image_description"
+                android:src="@drawable/ic_correct"/>
+
+            <ImageView
+                android:id="@+id/triple_wrong"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:scaleType="centerInside"
+                android:background="#FF5252"
+                android:layout_marginStart="56dp"
+                android:contentDescription="@string/image_description"
+                android:src="@drawable/ic_wrong"/>
+
+        </FrameLayout>
+
+        <!-- 主布局 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/triple_new"
+                android:layout_width="wrap_content"
+                android:contentDescription="@string/image_description"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/small"
+                android:src="@drawable/ic_new"/>
+
+            <TextView
+                android:id="@+id/triple_left_entity"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:text="实体1" />
+
+            <TextView
+                android:id="@+id/triple_right_entity"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:text="实体2"/>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:id="@+id/triple_relation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:entries="@array/relation">
+
+                </Spinner>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </com.chauthai.swipereveallayout.SwipeRevealLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

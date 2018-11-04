@@ -30,9 +30,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     // material motion tween
-    implementation 'com.github.material-motion:family-tween-android:2.1.0'
+    // implementation 'com.github.material-motion:family-tween-android:2.1.0'
     // easy popup window
-    implementation 'com.github.zyyoona7:EasyPopup:1.1.2'
+    // implementation 'com.github.zyyoona7:EasyPopup:1.1.2'
+
     // discrete seek bar(slider)
     implementation 'org.adw.library:discrete-seekbar:1.0.1'
+    // swipe layout
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+
 }

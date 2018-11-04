@@ -11,8 +11,9 @@ public class HttpUtil {
     private static final String REGISTER = "app_get_data/app_register";
     private static final String LOGOUT = "app_get_data/app_logout";
     private static final String GET_ENTITY = "app_get_data/app_get_entity";
-    private static final String GET_TRIPLE = "app_get_data/app_triple";
+    private static final String GET_TRIPLE = "app_get_data/app_get_triple";
     private static final String UPLOAD_ENTITY = "app_get_data/app_upload_entity";
+    private static final String UPLOAD_TRIPLE = "app_get_data/app_upload_triple";
 
     private static String sToken = ""; // 记录登录成功后的token值
 
@@ -38,6 +39,10 @@ public class HttpUtil {
 
     public static String getUploadEntityUrl(){
         return SERVER + UPLOAD_ENTITY;
+    }
+
+    public static String getUploadTripleUrl() {
+        return SERVER + UPLOAD_TRIPLE;
     }
 
     public static void setToken(String token){

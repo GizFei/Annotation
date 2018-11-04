@@ -54,6 +54,7 @@
                     android:layout_marginStart="@dimen/tiny"
                     android:layout_marginEnd="@dimen/tiny"
                     android:text="这是一段测试文本，这是第二句。"
+                    android:lineSpacingExtra="6dp"
                     android:padding="@dimen/small"
                     android:textSize="16sp"
                     android:textColor="@android:color/primary_text_light"

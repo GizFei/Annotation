@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="relation">
+        <item>任职</item>
+        <item>亲属</item>
+    </string-array>
+
+</resources>

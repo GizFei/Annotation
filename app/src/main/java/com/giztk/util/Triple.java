@@ -18,6 +18,7 @@ public class Triple {
     private String rightEntity;
     private int relationID;
     private int status;
+    private boolean original; // true:从云端返回的数据
 
     /**
      * 默认构造函数，会为这个Triple生成一个随机的id值，不能改变Triple的id值
@@ -29,6 +30,7 @@ public class Triple {
         leftEntity = rightEntity = "";
         relationID = -1;
         status = 1;  // 对新添加的默认正确
+        original = false;
     }
 
 
@@ -49,6 +51,7 @@ public class Triple {
             rightEntity = object.getString("right_entity");
             relationID = object.getInt("relation_id");
             status = 1; // 默认正确，为1
+            original = true;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -157,5 +160,9 @@ public class Triple {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public boolean isOriginal() {
+        return original;
     }
 }
