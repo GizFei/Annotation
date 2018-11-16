@@ -25,35 +25,54 @@ public class Triple {
      */
     public Triple(){
         // 随机生成值
-        id = UUID.randomUUID().toString().substring(0, 16);
+        id = UUID.randomUUID().toString().substring(0, 20);
         leftEStart = leftEENd = rightEStart = rightEEnd = relationStart = relationEnd = -1;
         leftEntity = rightEntity = "";
-        relationID = -1;
+        relationID = 0; // 默认是任职
         status = 1;  // 对新添加的默认正确
         original = false;
     }
-
 
     /**
      * 根据传入的object的构造Triple
      * @param object JSON对象
      */
-    public Triple(JSONObject object){
-        try {
-            id = object.getString("id");
-            leftEStart = object.getInt("left_e_start");
-            leftEENd = object.getInt("left_e_end");
-            rightEStart = object.getInt("right_e_start");
-            rightEEnd = object.getInt("right_e_end");
-            relationStart = object.getInt("relation_start");
-            relationEnd = object.getInt("relation_end");
-            leftEntity = object.getString("left_entity");
-            rightEntity = object.getString("right_entity");
-            relationID = object.getInt("relation_id");
-            status = 1; // 默认正确，为1
-            original = true;
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public Triple(JSONObject object, boolean theOriginal){
+        // 原生的，从服务器获取的，不是新建的
+        if(theOriginal){
+            try {
+                id = object.getString("id");
+                leftEStart = object.getInt("left_e_start");
+                leftEENd = object.getInt("left_e_end");
+                rightEStart = object.getInt("right_e_start");
+                rightEEnd = object.getInt("right_e_end");
+                relationStart = object.getInt("relation_start");
+                relationEnd = object.getInt("relation_end");
+                leftEntity = object.getString("left_entity");
+                rightEntity = object.getString("right_entity");
+                relationID = object.getInt("relation_id");
+                status = -2; // 表示还没判断，为1
+                original = true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else{
+            try {
+                id = object.getString("id");
+                leftEStart = object.getInt("left_e_start");
+                leftEENd = object.getInt("left_e_end");
+                rightEStart = object.getInt("right_e_start");
+                rightEEnd = object.getInt("right_e_end");
+                relationStart = object.getInt("relation_start");
+                relationEnd = object.getInt("relation_end");
+                leftEntity = object.getString("left_entity");
+                rightEntity = object.getString("right_entity");
+                relationID = object.getInt("relation_id");
+                status = object.getInt("status"); //新标注的为1
+                original = false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

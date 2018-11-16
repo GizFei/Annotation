@@ -51,8 +51,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/normal"
-                    android:text="人名"
-                    android:drawableTop="@drawable/ic_entity_person"
+                    android:text="实体1"
+                    android:drawableTop="@drawable/ic_entity_one"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -62,8 +62,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/normal"
-                    android:text="职位"
-                    android:drawableTop="@drawable/ic_entity_status"
+                    android:text="实体2"
+                    android:drawableTop="@drawable/ic_entity_two"
                     app:layout_constraintStart_toEndOf="@id/bang_entity_one"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -76,6 +76,17 @@
                     android:text="撤消"
                     android:drawableTop="@drawable/ic_cancel"
                     app:layout_constraintStart_toEndOf="@id/bang_entity_two"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/bang_entity_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/normal"
+                    android:text="清空"
+                    android:drawableTop="@drawable/ic_clear"
+                    app:layout_constraintStart_toEndOf="@id/bang_entity_cancel"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 

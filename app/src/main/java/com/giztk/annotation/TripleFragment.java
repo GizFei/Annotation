@@ -1,23 +1,37 @@
 package com.giztk.annotation;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,6 +49,7 @@ import com.giztk.util.HttpUtil;
 import com.giztk.util.Triple;
 import com.giztk.util.TripleAnnotation;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +60,7 @@ import java.util.Map;
 public class TripleFragment extends Fragment {
 
     private static final String TAG = "TripleFragment";
+    private static final int BANG_REQUEST = 5;
 
     private TripleAnnotation mTripleAnnotation;
     private TripleAdapter mAdapter;
@@ -52,9 +68,9 @@ public class TripleFragment extends Fragment {
     private TextView mTripleTitleTv;
     private TextView mTripleContentTv;
     //
-    private AppBarLayout mAppBarLayout;
-    private TextView mCollapseTitle;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+//    private AppBarLayout mAppBarLayout;
+//    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private ImageView mContentSwitch;
     //
     private String mOpenId = "";
 
@@ -70,63 +86,68 @@ public class TripleFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.test, container, false);
+        View view = inflater.inflate(R.layout.fragment_triple, container, false);
 
         mTripleRv = view.findViewById(R.id.triple_rv);
         mTripleRv.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mTripleTitleTv = view.findViewById(R.id.triple_title);
         mTripleContentTv = view.findViewById(R.id.triple_content);
-        mCollapseTitle = view.findViewById(R.id.collapseTitle);
+//        mCollapsingToolbarLayout = view.findViewById(R.id.ctl);
+//        mAppBarLayout = view.findViewById(R.id.appbar);
+        mContentSwitch = view.findViewById(R.id.contentSwitch);
+
         mTripleContentTv.setMovementMethod(ScrollingMovementMethod.getInstance());
-        mAppBarLayout = view.findViewById(R.id.appbar);
-        mCollapsingToolbarLayout = view.findViewById(R.id.ctl);
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                // Log.d(TAG, "appbar offset" + String.valueOf(i));
-//                if(mCollapsingToolbarLayout.getContentScrim() != null){
-//                    int alpha = mCollapsingToolbarLayout.getContentScrim().getAlpha();
-//                    Log.d(TAG, "appbar offset" + String.valueOf(alpha));
-//                    if(alpha < 50)
-//                    {
-//                        Log.d(TAG, "appbar offset no scrim");
-//                        mCollapseTitle.setAlpha(0);
-//                    }else{
-//                        mCollapseTitle.setAlpha(((float)alpha)/255);
-//                    }
-//                }
-                if(appBarLayout.getTotalScrollRange()+i < mCollapsingToolbarLayout.getScrimVisibleHeightTrigger()){
-                    mCollapseTitle.animate().alpha(1).setDuration(mCollapsingToolbarLayout.getScrimAnimationDuration())
-                            .setInterpolator(new LinearInterpolator()).start();
-                }else{
-                    mCollapseTitle.animate().alpha(0).setDuration(mCollapsingToolbarLayout.getScrimAnimationDuration())
-                            .setInterpolator(new LinearInterpolator()).start();
-                }
-            }
-        });
+//        mCollapsingToolbarLayout.setExpandedTitleColor(getActivity().getResources().getColor(android.R.color.transparent));
+//        mCollapsingToolbarLayout.setContentScrimColor(getActivity().getResources().getColor(R.color.gray));
 
         queryTriples();
 
         FloatingActionButton mNextFab = view.findViewById(R.id.fab_next);
         FloatingActionButton mFinishFab = view.findViewById(R.id.fab_finish);
+        FloatingActionButton mNewFab = view.findViewById(R.id.fab_new);
 
         mNextFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                queryTriples();
+                new AlertDialog.Builder(getContext())
+                        .setTitle("确定已经提交了吗？")
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mTripleAnnotation.clear();
+                                updateUI();
+                                queryTriples();
+                            }
+                        }).show();
             }
         });
 
         mFinishFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 判断是否所以的关系都判断过
+                for(Triple t : mTripleAnnotation.getTriples()){
+                    if(t.getStatus() == -2){
+                        Toast.makeText(getContext(), "还有未判断正确与否的关系", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
                 uploadTriples();
+            }
+        });
+
+        mNewFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                letItBigBang();
             }
         });
 
@@ -140,7 +161,46 @@ public class TripleFragment extends Fragment {
             }
         });
 
+//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+//            @Override
+//            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+//                Log.d(TAG, String.valueOf(mCollapsingToolbarLayout.getContentScrim().getAlpha()));
+//            }
+//        });
+
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_font_size:
+                showFontSizeDialog();
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == getActivity().RESULT_OK){
+            if(requestCode == BANG_REQUEST){
+                Log.d("Activity Result", data.getStringExtra("NEW_ANNOTATION"));
+                try {
+                    Triple triple = new Triple(new JSONObject(data.getStringExtra("NEW_ANNOTATION")), false);
+                    mTripleAnnotation.addTriple(triple);
+                    mAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -154,14 +214,17 @@ public class TripleFragment extends Fragment {
                         try {
                             JSONObject triplesObject = new JSONObject(response);
                             Log.d(TAG, triplesObject.toString(4));
-                            mTripleAnnotation = new TripleAnnotation(triplesObject);
-                            mTripleTitleTv.setText(mTripleAnnotation.getTitle());
-                            mTripleContentTv.setText(mTripleAnnotation.getSentContent());
-                            //
-                            mCollapseTitle.setAlpha(0);
-                            mCollapseTitle.setText(mTripleAnnotation.getTitle());
-                            //
-                            updateUI();
+                            if(triplesObject.has("msg")){
+                                queryTriples();
+                            }else{
+                                mTripleAnnotation = new TripleAnnotation(triplesObject);
+                                mTripleTitleTv.setText(mTripleAnnotation.getTitle());
+                                mTripleContentTv.setText(mTripleAnnotation.getSentContent());
+//                                mCollapsingToolbarLayout.setTitle(mTripleAnnotation.getTitle());
+
+                                measureContentHeight();
+                                updateUI();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -183,6 +246,16 @@ public class TripleFragment extends Fragment {
         HttpSingleTon.getInstance(getActivity()).addToRequestQueue(request);
     }
 
+    /**
+     * 标注新的关系
+     */
+    private void letItBigBang(){
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                mTripleContentTv, getResources().getString(R.string.transition_name));
+        Intent intent = TripleBangActivity.newIntent(getContext(), mTripleAnnotation.toJSONString());
+        startActivityForResult(intent, BANG_REQUEST, options.toBundle());
+    }
+
     private void updateUI(){
         if(mAdapter == null){
             mAdapter = new TripleAdapter(mTripleAnnotation.getTriples());
@@ -191,6 +264,51 @@ public class TripleFragment extends Fragment {
             mAdapter.setTripleList(mTripleAnnotation.getTriples());
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * 测量文本高度
+     */
+    private void measureContentHeight(){
+        ViewTreeObserver observer = mTripleContentTv.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mTripleContentTv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                final int height = Math.max(mTripleContentTv.getMeasuredHeight(), 500);
+                Log.d(TAG, String.valueOf(height));
+                final int originHeight = 120;
+                mTripleContentTv.setHeight(originHeight);
+
+                mContentSwitch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mTripleContentTv.getHeight() == originHeight) {
+                            AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
+                                    getContext(), R.drawable.av_down_to_up);
+                            mContentSwitch.setImageDrawable(drawableCompat);
+                            ((Animatable)mContentSwitch.getDrawable()).start();
+
+                            ValueAnimator animator = ObjectAnimator.ofInt(mTripleContentTv, "height", originHeight, height);
+                            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                            animator.setDuration(400);
+                            animator.start();
+                        } else {
+                            AnimatedVectorDrawableCompat drawableCompat = AnimatedVectorDrawableCompat.create(
+                                    getContext(), R.drawable.av_up_to_down);
+                            mContentSwitch.setImageDrawable(drawableCompat);
+                            ((Animatable)mContentSwitch.getDrawable()).start();
+
+                            ValueAnimator animator = ObjectAnimator.ofInt(mTripleContentTv, "height", height, originHeight);
+                            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                            animator.setDuration(400);
+                            animator.start();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -206,10 +324,9 @@ public class TripleFragment extends Fragment {
                             Log.d(TAG, msg.toString(4));
                             if(msg.getString("msg").equals("上传成功")){
                                 Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
-                                // todo 上传成功之后的相关操作
+
                                 queryTriples();
                             }else{
-                                // todo 上传失败后的相关操作
                                 Toast.makeText(getContext(), "提交失败", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
@@ -257,8 +374,11 @@ public class TripleFragment extends Fragment {
         private SwipeRevealLayout mRevealLayout;
         private Spinner mRelationSpinner;
         private ImageView mTripleNew;
+        private ImageView mTripleWrong;
+        private ImageView mTripleCorrect;
         private ImageView mCorrectIcon;
         private ImageView mWrongIcon;
+        private ImageView mDeleteIcon;
 
         private TripleHolder(View view){
             super(view);
@@ -268,20 +388,79 @@ public class TripleFragment extends Fragment {
             mRevealLayout = itemView.findViewById(R.id.swipe_rl);
             mRelationSpinner = itemView.findViewById(R.id.triple_relation);
             mTripleNew = itemView.findViewById(R.id.triple_new);
+            mTripleCorrect = itemView.findViewById(R.id.triple_judge_correct);
+            mTripleWrong = itemView.findViewById(R.id.triple_judge_wrong);
             mCorrectIcon = itemView.findViewById(R.id.triple_correct);
             mWrongIcon = itemView.findViewById(R.id.triple_wrong);
+            mDeleteIcon = itemView.findViewById(R.id.triple_delete);
         }
 
         private void bind(final Triple triple){
             mTripleLeftEntityTv.setText(triple.getLeftEntity());
             mTripleRightEntityTv.setText(triple.getRightEntity());
             mRelationSpinner.setSelection(triple.getRelationID());
+            Log.d(TAG, "triple is original? " + String.valueOf(triple.isOriginal()));
             if(triple.isOriginal()){
                 mRelationSpinner.setEnabled(false);
+                if(triple.getStatus() == 1){
+                    // 判断正确
+                    mTripleWrong.setVisibility(View.GONE);
+                    mTripleCorrect.setVisibility(View.VISIBLE);
+                }else if(triple.getStatus() == -1){
+                    mTripleWrong.setVisibility(View.VISIBLE);
+                    mTripleCorrect.setVisibility(View.GONE);
+                }else{
+                    mTripleWrong.setVisibility(View.GONE);
+                    mTripleCorrect.setVisibility(View.GONE);
+                    mTripleNew.setVisibility(View.GONE);
+                }
             }else{
                 // 新标注的图标提示
                 mTripleNew.setVisibility(View.VISIBLE);
-                mRevealLayout.setLockDrag(true);
+                mTripleWrong.setVisibility(View.GONE);
+                mTripleCorrect.setVisibility(View.GONE);
+                // 显示删除按钮
+//                mRevealLayout.setLockDrag(true);
+                mRelationSpinner.setEnabled(true);
+                mWrongIcon.setVisibility(View.GONE);
+                mCorrectIcon.setVisibility(View.GONE);
+                mDeleteIcon.setVisibility(View.VISIBLE);
+
+                mRelationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        int pos = getAdapterPosition();
+                        Triple t = mTripleAnnotation.getTriple(pos);
+                        t.setRelationID(position);
+                        Log.d(TAG, " " + String.valueOf(position) + "item pos" + String.valueOf(pos) + t.toJSONObject().toString());
+                        mTripleAnnotation.updateTriple(t);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+                mDeleteIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final int pos = getAdapterPosition();
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("你确定要删除该标注吗？")
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.d(TAG, "item pos" + String.valueOf(pos));
+                                        mTripleAnnotation.removeTriple(pos);
+                                        updateUI();
+                                    }
+                                }).show();
+                    }
+                });
+
+
+                return;
             }
 
             mCorrectIcon.setOnClickListener(this);
@@ -311,10 +490,22 @@ public class TripleFragment extends Fragment {
             Log.d(TAG, "triple click");
             switch (v.getId()){
                 case R.id.triple_correct:
-                    Log.d(TAG, "第几项 "+String.valueOf(pos) + "correct");
+                    Triple t = mTripleAnnotation.getTriple(pos);
+                    t.setStatus(1);
+                    Log.d(TAG, "第几项 "+String.valueOf(pos) + " correct" + t.toJSONObject().toString());
+                    mTripleAnnotation.updateTriple(t);
+                    mRevealLayout.close(false);
+                    mTripleWrong.setVisibility(View.GONE);
+                    mTripleCorrect.setVisibility(View.VISIBLE);
                     break;
                 case R.id.triple_wrong:
-                    Log.d(TAG, "第几项 " + String.valueOf(pos) + "wrong");
+                    Triple t2 = mTripleAnnotation.getTriple(pos);
+                    t2.setStatus(-1);
+                    Log.d(TAG, "第几项 "+String.valueOf(pos) + " wrong" + t2.toJSONObject().toString());
+                    mTripleAnnotation.updateTriple(t2);
+                    mRevealLayout.close(false);
+                    mTripleWrong.setVisibility(View.VISIBLE);
+                    mTripleCorrect.setVisibility(View.GONE);
                     break;
             }
         }
@@ -355,16 +546,66 @@ public class TripleFragment extends Fragment {
             return mTripleList.size();
         }
 
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+        @Override
+        public void onViewRecycled(@NonNull TripleHolder holder) {
+            super.onViewRecycled(holder);
+        }
+
         private void setTripleList(List<Triple> list){
             mTripleList = list;
         }
 
-        public void saveStates(Bundle outState) {
+        private void saveStates(Bundle outState) {
             mBinderHelper.saveStates(outState);
         }
 
-        public void restoreStates(Bundle inState) {
+        private void restoreStates(Bundle inState) {
             mBinderHelper.restoreStates(inState);
         }
+    }
+
+    private void showFontSizeDialog(){
+        final Dialog dialog = new Dialog(getContext());
+
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_font_size, null);
+        final TextView model = view.findViewById(R.id.model);
+        final DiscreteSeekBar slider = view.findViewById(R.id.slider);
+        view.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTripleContentTv.setTextSize(slider.getProgress());
+                dialog.dismiss();
+            }
+        });
+        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        slider.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                model.setTextSize(value);
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.setContentView(view);
+        dialog.show();
     }
 }

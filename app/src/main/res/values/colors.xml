@@ -7,4 +7,6 @@
     <color name="gray">#EEE</color>
     <color name="entity_person">#ff5252</color>
     <color name="entity_status">#64dd17</color>
+    <color name="left_entity">#FF5252</color>
+    <color name="right_entity">#4569FF</color>
 </resources>

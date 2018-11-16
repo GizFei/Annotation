@@ -202,8 +202,10 @@ public class ContentFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == BANG_REQUEST){
-            updateEntityRv();
+        if(resultCode == getActivity().RESULT_OK) {
+            if(requestCode == BANG_REQUEST){
+                updateEntityRv();
+            }
         }
     }
 
@@ -245,10 +247,6 @@ public class ContentFragment extends Fragment {
         };
         HttpSingleTon.getInstance(getActivity()).addToRequestQueue(request);
 //        mEntityObject = new EntityObject(TextUtil.getTestContent());
-    }
-
-    private void showWaitingDialog(){
-
     }
 
     private class EntityObject{

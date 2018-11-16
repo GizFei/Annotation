@@ -11,16 +11,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.giztk.util.HttpUtil;
 import com.giztk.util.TextUtil;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // 注册活动
 public class SignUpActivity extends AppCompatActivity implements TextWatcher {
@@ -66,10 +71,10 @@ public class SignUpActivity extends AppCompatActivity implements TextWatcher {
         mSignUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = mUsernameText.getText().toString();
-                String password = mPasswordText.getText().toString();
+                final String username = mUsernameText.getText().toString();
+                final String password = mPasswordText.getText().toString();
                 String password2 = mPassword2Text.getText().toString();
-                String email = mEmailText.getText().toString();
+                final String email = mEmailText.getText().toString();
 
                 if(username.equals("") || password.equals("") || email.equals("")){
                     showError("用户名或密码或邮箱未输入");
@@ -81,14 +86,13 @@ public class SignUpActivity extends AppCompatActivity implements TextWatcher {
                     return;
                 }
 
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, HttpUtil.getRegisterUrl(),
-                        TextUtil.formRegisterJson(username, password, email),
-                        new Response.Listener<JSONObject>() {
+                StringRequest request = new StringRequest(Request.Method.POST, HttpUtil.getRegisterUrl(),
+                        new Response.Listener<String>() {
                             @Override
-                            public void onResponse(JSONObject response) {
+                            public void onResponse(String response) {
                                 try{
-                                    Log.d(TAG, response.toString(4));
-                                    String msg = response.getString("msg");
+                                    Log.d(TAG, new JSONObject(response).toString(4));
+                                    String msg = new JSONObject(response).getString("msg");
                                     if(msg.equals("用户名已注册")){
                                         showError("用户名已注册");
                                     }else{
@@ -105,7 +109,17 @@ public class SignUpActivity extends AppCompatActivity implements TextWatcher {
                                 error.printStackTrace();
                                 showError(error.getMessage());
                             }
-                        });
+                        }){
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("username", username);
+                        params.put("email", email);
+                        params.put("password", password);
+                        Log.d(TAG, params.toString());
+                        return params;
+                    }
+                };
                 mRequestQueue.add(request);
             }
         });

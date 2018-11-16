@@ -35,7 +35,7 @@ public class TripleAnnotation {
             mSentContent = tripleObject.getString(TRIPLE_SENT_CTX);
             JSONArray triples = tripleObject.getJSONArray(TRIPLE_TRIPLES);
             for(int i = 0; i < triples.length(); i++){
-                Triple t = new Triple(triples.getJSONObject(i));
+                Triple t = new Triple(triples.getJSONObject(i), true);
                 mTriples.add(t);
             }
         }catch (Exception e){
@@ -79,6 +79,10 @@ public class TripleAnnotation {
         return mTriples;
     }
 
+    public Triple getTriple(int i){
+        return mTriples.get(i);
+    }
+
     public void setTriples(List<Triple> triples) {
         mTriples = triples;
     }
@@ -86,6 +90,11 @@ public class TripleAnnotation {
     // 添加新标注的Triple
     public void addTriple(Triple t){
         mTriples.add(t);
+    }
+
+    // 删除Triple
+    public void removeTriple(int index){
+        mTriples.remove(index);
     }
 
     // 更新原来的Triple
@@ -115,5 +124,13 @@ public class TripleAnnotation {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public void clear(){
+        mDocId = "";
+        mSentContent = "";
+        mTriples.clear();
+        mSentId = -1;
+        mTitle = "";
     }
 }

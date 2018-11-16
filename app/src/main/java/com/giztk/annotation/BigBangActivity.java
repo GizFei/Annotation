@@ -26,11 +26,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class BigBangActivity extends AppCompatActivity {
-    //TODO 英文人名合并
 
     private static final String TAG = "BigBangActivity";
     private static final String EXTRA_CONTENT = "extra_content";
@@ -41,6 +39,8 @@ public class BigBangActivity extends AppCompatActivity {
     private TextView mEntityPersonBtn;
     private TextView mEntityStatusBtn;
     private TextView mEntityDoneBtn;
+    private TextView mEntityCancelBtn;
+    private TextView mEntityBackBtn;
 
     private List<Integer> mSelectedCharIndexList;
     private List<Character> mCharacterList;
@@ -83,9 +83,11 @@ public class BigBangActivity extends AppCompatActivity {
         // 初始化已选择的单字索引列表
         mSelectedCharIndexList = new ArrayList<>();
         // 初始化按钮
-        mEntityPersonBtn = findViewById(R.id.bang_entity_person);
-        mEntityStatusBtn = findViewById(R.id.bang_entity_status);
+        mEntityPersonBtn = findViewById(R.id.bang_entity_one);
+        mEntityStatusBtn = findViewById(R.id.bang_entity_two);
         mEntityDoneBtn = findViewById(R.id.bang_entity_done);
+        mEntityCancelBtn = findViewById(R.id.bang_entity_cancel);
+        mEntityBackBtn = findViewById(R.id.bang_entity_back);
 
         // 初始化事件
         initEvents();
@@ -123,6 +125,12 @@ public class BigBangActivity extends AppCompatActivity {
 //                onBackPressed();
 //            }
 //        });
+        mEntityBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         mEntityPersonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +151,17 @@ public class BigBangActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK, null);
                 finish();
+            }
+        });
+
+        mEntityCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(Integer i: mSelectedCharIndexList){
+                    mCharacterList.get(i).isSelected = false;
+                    mAdapter.notifyItemChanged(i);
+                }
+                mSelectedCharIndexList.clear();
             }
         });
     }
@@ -198,15 +217,33 @@ public class BigBangActivity extends AppCompatActivity {
                 mCharView.setBackgroundResource(android.R.color.white);
                 mCharView.setTextColor(Color.BLACK);
                 mSelectedCharIndexList.remove(Integer.valueOf(c.index));
+                c.isSelected = !c.isSelected;
             }else{
                 // 选中状态
 //                Log.d(TAG, "select" + String.valueOf(c.index));
-                mCharView.setTextColor(Color.WHITE);
-                mCharView.setBackgroundResource(R.color.colorPrimary);
-                mSelectedCharIndexList.add(c.index);
+                // 首尾选中
+                if(mSelectedCharIndexList.size() == 1){ // 已经选中一个
+                    if(mSelectedCharIndexList.get(0) <= c.index){
+                        for(int i = mSelectedCharIndexList.get(0)+1; i <= c.index; i++){
+                            mSelectedCharIndexList.add(i);
+                            mCharacterList.get(i).isSelected = true;
+                            mAdapter.notifyItemChanged(i);
+                        }
+                    }else{
+                        for(int i = c.index; i < mSelectedCharIndexList.get(0); i++){
+                            mSelectedCharIndexList.add(i);
+                            mCharacterList.get(i).isSelected = true;
+                            mAdapter.notifyItemChanged(i);
+                        }
+                    }
+                }else {
+                    mCharView.setTextColor(Color.WHITE);
+                    mCharView.setBackgroundResource(R.color.colorPrimary);
+                    mSelectedCharIndexList.add(c.index);
+                    c.isSelected = !c.isSelected;
+                }
             }
 //            Log.d(TAG, String.valueOf(c.isSelected));
-            c.isSelected = !c.isSelected;
 //            Log.d(TAG, String.valueOf(mCharacterList.get(c.index).isSelected));
         }
     }
@@ -267,6 +304,7 @@ public class BigBangActivity extends AppCompatActivity {
         int startOffset = mSelectedCharIndexList.get(0);
         Log.d(TAG, "StartOffset" + String.valueOf(startOffset));
         Log.d(TAG, "EndOffset" + String.valueOf(endOffset));
+        // 不连续的话清除
         if((endOffset - startOffset) != (length-1)){
             Toast.makeText(BigBangActivity.this, "选中的词要连续", Toast.LENGTH_SHORT).show();
             for(Integer i: mSelectedCharIndexList){
