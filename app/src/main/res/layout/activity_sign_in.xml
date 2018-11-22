@@ -1,136 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_login_in">
 
-    <ImageView
-        android:id="@+id/oral1"
-        android:layout_width="@dimen/large"
-        android:layout_height="@dimen/large"
-        android:layout_marginTop="56dp"
-        android:background="@drawable/oral"
-        android:contentDescription="@string/image_description"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@id/app_name"
-        tools:layout_editor_absoluteX="96dp" />
-    <ImageView
-        android:id="@+id/oral2"
-        android:layout_width="@dimen/large"
-        android:layout_height="@dimen/large"
-        android:background="@drawable/oral"
-        android:layout_marginStart="@dimen/small"
-        android:contentDescription="@string/image_description"
-        app:layout_constraintStart_toEndOf="@id/oral1"
-        app:layout_constraintTop_toTopOf="@id/oral1"/>
-    <TextView
-        android:id="@+id/app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Annotation"
-        android:textSize="40sp"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/oral1"
-        app:layout_constraintEnd_toEndOf="parent"/>
-    <TextView
-        android:id="@+id/authors"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/authors"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@id/app_name"
-        app:layout_constraintTop_toBottomOf="@id/app_name"/>
-    <ImageView
-        android:id="@+id/oral3"
-        android:layout_width="@dimen/large"
-        android:layout_height="@dimen/large"
-        android:background="@drawable/oral"
-        android:contentDescription="@string/image_description"
-        app:layout_constraintEnd_toEndOf="@id/app_name"
-        app:layout_constraintTop_toBottomOf="@id/app_name"/>
-
-    <EditText
-        android:id="@+id/sign_in_username"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginStart="@dimen/double_large"
-        android:layout_marginTop="44dp"
-        android:paddingStart="@dimen/large"
-        android:paddingEnd="0dp"
-        android:layout_marginEnd="@dimen/double_large"
-        android:background="@drawable/et_round_shape"
-        android:hint="用户名"
-        android:drawableEnd="@drawable/ic_signin_username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/oral3" />
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/sign_in_password"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginStart="@dimen/double_large"
-        android:layout_marginTop="@dimen/normal"
-        android:layout_marginEnd="@dimen/double_large"
-        android:background="@drawable/et_round_shape"
-        android:paddingStart="@dimen/large"
-        android:paddingEnd="0dp"
-        android:drawableEnd="@drawable/ic_signin_password"
-        android:inputType="textPassword"
-        android:hint="密码"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sign_in_username" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/error_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="这里显示错误信息"
-        android:textSize="16sp"
-        android:textColor="@android:color/holo_red_light"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/large"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sign_in_password"/>
+            <ImageView
+                android:id="@+id/oral1"
+                android:layout_width="@dimen/large"
+                android:layout_height="@dimen/large"
+                android:layout_marginTop="56dp"
+                android:background="@drawable/oral"
+                android:contentDescription="@string/image_description"
+                app:layout_constraintStart_toStartOf="@id/app_name"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="96dp" />
 
-    <Button
-        android:id="@+id/btn_sign_in"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="@dimen/huge"
-        android:layout_marginEnd="@dimen/huge"
-        android:layout_marginBottom="@dimen/normal"
-        android:text="登录"
-        android:textSize="20sp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/btn_sign_in"
-        app:layout_constraintStart_toStartOf="@id/sign_in_password"
-        app:layout_constraintEnd_toEndOf="@id/sign_in_password"
-        app:layout_constraintBottom_toTopOf="@id/btn_sign_up"/>
+            <ImageView
+                android:id="@+id/oral2"
+                android:layout_width="@dimen/large"
+                android:layout_height="@dimen/large"
+                android:layout_marginStart="@dimen/small"
+                android:background="@drawable/oral"
+                android:contentDescription="@string/image_description"
+                app:layout_constraintStart_toEndOf="@id/oral1"
+                app:layout_constraintTop_toTopOf="@id/oral1" />
 
-    <Button
-        android:id="@+id/btn_sign_up"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="@dimen/huge"
-        android:layout_marginEnd="@dimen/huge"
-        android:layout_marginBottom="@dimen/huge"
-        android:text="注册"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"
-        android:background="@drawable/btn_sign_up"
-        app:layout_constraintStart_toStartOf="@id/sign_in_password"
-        app:layout_constraintEnd_toEndOf="@id/sign_in_password"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Annotation"
+                android:textColor="@android:color/black"
+                android:textSize="40sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/oral1" />
 
+            <TextView
+                android:id="@+id/authors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/authors"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@id/app_name"
+                app:layout_constraintTop_toBottomOf="@id/app_name" />
+
+            <ImageView
+                android:id="@+id/oral3"
+                android:layout_width="@dimen/large"
+                android:layout_height="@dimen/large"
+                android:background="@drawable/oral"
+                android:contentDescription="@string/image_description"
+                app:layout_constraintEnd_toEndOf="@id/app_name"
+                app:layout_constraintTop_toBottomOf="@id/app_name" />
+
+            <EditText
+                android:id="@+id/sign_in_username"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/double_large"
+                android:layout_marginStart="@dimen/double_large"
+                android:layout_marginTop="44dp"
+                android:background="@drawable/et_round_shape"
+                android:drawableEnd="@drawable/ic_signin_username"
+                android:hint="用户名"
+                android:paddingEnd="0dp"
+                android:paddingStart="@dimen/large"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/oral3" />
+
+            <EditText
+                android:id="@+id/sign_in_password"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/double_large"
+                android:layout_marginStart="@dimen/double_large"
+                android:layout_marginTop="@dimen/normal"
+                android:background="@drawable/et_round_shape"
+                android:drawableEnd="@drawable/ic_signin_password"
+                android:hint="密码"
+                android:inputType="textPassword"
+                android:paddingEnd="0dp"
+                android:paddingStart="@dimen/large"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sign_in_username" />
+
+            <TextView
+                android:id="@+id/error_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/large"
+                android:text="这里显示错误信息"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sign_in_password" />
+
+            <Button
+                android:id="@+id/btn_sign_in"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/huge"
+                android:layout_marginStart="@dimen/huge"
+                android:layout_marginTop="124dp"
+                android:background="@drawable/btn_sign_in"
+                android:text="登录"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@id/sign_in_password"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/sign_in_password"
+                app:layout_constraintTop_toTopOf="@+id/error_text" />
+
+            <Button
+                android:id="@+id/btn_sign_up"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="11dp"
+                android:layout_marginEnd="@dimen/huge"
+                android:layout_marginStart="@dimen/huge"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_sign_up"
+                android:text="注册"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/sign_in_password"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/sign_in_password"
+                app:layout_constraintTop_toBottomOf="@+id/btn_sign_in"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

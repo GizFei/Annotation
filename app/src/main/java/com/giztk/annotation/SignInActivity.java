@@ -68,9 +68,10 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void initEvents(){
-        mSignInButton.setOnClickListener(new View.OnClickListener() {
+        // 实现接口的匿名内部类，继承并重写onMultiClick函数
+        mSignInButton.setOnClickListener(new MultiClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onMultiClick(View v) {
                 final String username = mUsernameText.getText().toString();
                 final String password = mPasswordText.getText().toString();
                 if(username.equals("") || password.equals("")){
@@ -174,4 +175,23 @@ public class SignInActivity extends AppCompatActivity {
             mErrorText.setVisibility(View.GONE);
         }
     }
+
+    // 抽象类，实现了接口View.OnClickListener的接口
+    public abstract class MultiClickListener implements View.OnClickListener {
+        // 两次点击按钮之间的最小点击间隔时间(单位:ms)
+        private static final int MIN_CLICK_DELAY_TIME = 2000;
+        private long lastClickTime;
+
+        @Override
+        public void onClick(View v) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+                lastClickTime = currentTime;
+                onMultiClick(v);
+            }
+        }
+        // 抽象函数，子类必须继承重写
+        public abstract void onMultiClick(View v);
+    }
+
 }
