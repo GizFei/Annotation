@@ -7,13 +7,17 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.giztk.util.StillViewPager;
 import com.giztk.util.TabFragmentPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private FragmentManager mFragmentManager;
     private TabLayout mTabLayout;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
 
         initEvents();
+        Log.d(TAG, "onCreate");
     }
 
     /**

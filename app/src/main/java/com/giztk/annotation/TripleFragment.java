@@ -62,6 +62,8 @@ public class TripleFragment extends Fragment {
     private static final String TAG = "TripleFragment";
     private static final int BANG_REQUEST = 5;
 
+    private static final String Key_Triples = "Triples";
+
     private TripleAnnotation mTripleAnnotation;
     private TripleAdapter mAdapter;
     private RecyclerView mTripleRv;
@@ -107,7 +109,21 @@ public class TripleFragment extends Fragment {
 //        mCollapsingToolbarLayout.setExpandedTitleColor(getActivity().getResources().getColor(android.R.color.transparent));
 //        mCollapsingToolbarLayout.setContentScrimColor(getActivity().getResources().getColor(R.color.gray));
 
-        queryTriples();
+        if(savedInstanceState != null) {
+            try {
+                mTripleAnnotation = new TripleAnnotation(new JSONObject(savedInstanceState.getString(Key_Triples)));
+                mTripleTitleTv.setText(mTripleAnnotation.getTitle());
+                mTripleContentTv.setText(mTripleAnnotation.getSentContent());
+                measureContentHeight();
+                updateUI();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                mTripleAnnotation = new TripleAnnotation(new JSONObject());
+            }
+        }
+        else {
+            queryTriples();
+        }
 
         FloatingActionButton mNextFab = view.findViewById(R.id.fab_next);
         FloatingActionButton mFinishFab = view.findViewById(R.id.fab_finish);
@@ -357,6 +373,7 @@ public class TripleFragment extends Fragment {
         if (mAdapter != null) {
             mAdapter.saveStates(outState);
         }
+        outState.putString(Key_Triples, mTripleAnnotation.toJSONString());
     }
 
     @Override

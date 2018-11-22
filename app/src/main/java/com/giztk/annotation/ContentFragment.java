@@ -48,6 +48,9 @@ import java.util.Map;
 public class ContentFragment extends Fragment {
 
     private static final String TAG = "ContentFragment";
+    private static final String Key_Title = "Title";
+    private static final String Key_Content = "Content";
+    private static final String  KEY_OBJECT = "Object";
 
     private static final int BANG_REQUEST = 5;
     private EntityObject mEntityObject;
@@ -66,6 +69,7 @@ public class ContentFragment extends Fragment {
 
         ContentFragment fragment = new ContentFragment();
         fragment.setArguments(args);
+        Log.d(TAG, "newInstance");
         return fragment;
     }
 
@@ -91,7 +95,21 @@ public class ContentFragment extends Fragment {
         mAnnotationRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateEntityRv();
 
-        queryContent();
+        // 处理旋转屏幕
+        if(savedInstanceState != null) {
+            mTitleText.setText(savedInstanceState.getString(Key_Title));
+            mContentText.setText(savedInstanceState.getString(Key_Content));
+
+            try {
+                mEntityObject = new EntityObject(new JSONObject(savedInstanceState.getString(KEY_OBJECT)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                mEntityObject = new EntityObject(new JSONObject());
+            }
+        }
+        else {
+            queryContent();
+        }
 
         mContentText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +160,14 @@ public class ContentFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Key_Title, mTitleText.getText().toString());
+        outState.putString(Key_Content, mContentText.getText().toString());
+        outState.putString(KEY_OBJECT, mEntityObject.toJSONString());
     }
 
     @Override
@@ -269,6 +295,20 @@ public class ContentFragment extends Fragment {
                 sentId = -1;
                 mContentText.setClickable(false);
                 e.printStackTrace();
+            }
+        }
+
+        private String toJSONString(){
+            try {
+                JSONObject o = new JSONObject();
+                o.put("title", title);
+                o.put("content", content);
+                o.put("doc_id", docId);
+                o.put("sent_id", sentId);
+                return o.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "";
             }
         }
     }
