@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,6 +43,8 @@ public class SignInActivity extends AppCompatActivity {
     private TextView mErrorText;
 
     private RequestQueue mRequestQueue;
+
+    private String msg;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,7 +89,7 @@ public class SignInActivity extends AppCompatActivity {
                                 try {
                                     JSONObject object = new JSONObject(response);
                                     Log.d(TAG, object.toString(4));
-                                    String msg = object.getString("msg");
+                                    msg = object.getString("msg");
                                     String token = object.getString("token");
                                     HttpUtil.setToken(token);
                                     SharedPreferences preferences = SignInActivity.this.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
@@ -95,15 +98,16 @@ public class SignInActivity extends AppCompatActivity {
                                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish();
+                                    Toast.makeText(getApplicationContext(), "登陆成功", Toast.LENGTH_SHORT).show();
                                 } catch (JSONException e) {
-                                    showError("用户名或密码错误");
+                                    showError(msg);
                                     e.printStackTrace();
                                 }
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        showError("网络请求错误");
+                        showError("网络请求错误，请用校网");
                         error.printStackTrace();
                     }
                 }){
