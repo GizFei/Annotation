@@ -201,7 +201,7 @@ public class ContentFragment extends Fragment {
                                 // 上传成功后自动跳转下一页
                                 queryContent();
                             }else{
-                                Toast.makeText(getContext(), "提交失败", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                             }
                             Log.d(TAG, "upload response" + r.toString(4));
                         } catch (JSONException e) {

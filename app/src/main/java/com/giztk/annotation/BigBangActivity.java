@@ -3,7 +3,9 @@ package com.giztk.annotation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,12 +15,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.giztk.util.EntityAnnotation;
+import com.giztk.util.TabFragmentPagerAdapter;
 import com.giztk.util.TextUtil;
 
 import org.json.JSONException;
@@ -66,7 +70,15 @@ public class BigBangActivity extends AppCompatActivity {
         // 初始化列表实例
         mCharacterList = new ArrayList<>();
         mRecyclerView = findViewById(R.id.bang_chars);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(BigBangActivity.this, 8));
+        // 横竖屏每行显示字数
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //竖屏
+            mRecyclerView.setLayoutManager(new GridLayoutManager(BigBangActivity.this, 8));
+        }
+        else {
+            //横屏
+            mRecyclerView.setLayoutManager(new GridLayoutManager(BigBangActivity.this,16));
+        }
         mChars = TextUtil.splitSentence(getIntent().getStringExtra(EXTRA_CONTENT));
         for(int i = 0; i < mChars.size(); i++){
             Character character = new Character();
@@ -181,6 +193,7 @@ public class BigBangActivity extends AppCompatActivity {
             super(view);
             mCharView = itemView.findViewById(R.id.item_char);
             itemView.setOnClickListener(this);
+            setGestureListener();
         }
 
         private void bind(int i){
@@ -245,6 +258,60 @@ public class BigBangActivity extends AppCompatActivity {
             }
 //            Log.d(TAG, String.valueOf(c.isSelected));
 //            Log.d(TAG, String.valueOf(mCharacterList.get(c.index).isSelected));
+        }
+
+        // 监听滑动事件
+        private float mPosX;
+        private float mPosY;
+        private float mCurPosX;
+        private float mCurPosY;
+        private int TK_n;
+        private Character TK_c;
+        private void setGestureListener() {
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            TK_n = getAdapterPosition();
+                            Log.d(TAG, String.valueOf(TK_n));
+                            TK_c = mCharacterList.get(TK_n);
+                            Log.d(TAG, "mouse down");
+                            mPosX = event.getX();
+                            mPosY = event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            Log.d(TAG, "mouse move");
+                            mCurPosX = event.getX();
+                            mCurPosY = event.getY();
+                            // 滑动限定在一行上，仅取消选择
+                            if(Math.abs(mCurPosX - mPosX) > 15 && Math.abs(mCurPosY - mPosY) < 30) {
+                                if(TK_c.isSelected) {
+                                    mSelectedCharIndexList.remove(Integer.valueOf(TK_c.index));
+                                    mCharacterList.get(TK_n).isSelected = false;
+                                    mAdapter.notifyItemChanged(TK_n);
+
+                                    if(mCurPosX > mPosX)
+                                        TK_n += 1;
+                                    else
+                                        TK_n -= 1;
+                                    mPosX = mCurPosX;
+                                    mPosY = mCurPosY;
+                                    TK_c = mCharacterList.get(TK_n);
+                                }
+                                // TODO 选择多选
+                                else {
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            Log.d(TAG, "mouse up");
+                            break;
+                    }
+                    // 需要返回false否则无法触发onClick()
+                    return false;
+                }
+            });
         }
     }
 
