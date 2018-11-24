@@ -5,4 +5,5 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="image_description">An image</string>
     <string name="transition_name">Transition</string>
+    <string name="log_out">退出登录</string>
 </resources>

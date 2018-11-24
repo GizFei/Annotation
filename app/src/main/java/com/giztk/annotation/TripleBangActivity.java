@@ -3,6 +3,7 @@ package com.giztk.annotation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.print.PrinterId;
@@ -80,7 +81,15 @@ public class TripleBangActivity extends AppCompatActivity {
         mTriple = new Triple();
 
         mRecyclerView = findViewById(R.id.bang_chars);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(TripleBangActivity.this, 8));
+        // 横竖屏每行显示字数
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //竖屏
+            mRecyclerView.setLayoutManager(new GridLayoutManager(TripleBangActivity.this, 8));
+        }
+        else {
+            //横屏
+            mRecyclerView.setLayoutManager(new GridLayoutManager(TripleBangActivity.this,16));
+        }
         mChars = TextUtil.splitSentence(mTripleAnnotation.getSentContent());
         for(int i = 0; i < mChars.size(); i++){
             Character character = new Character();
