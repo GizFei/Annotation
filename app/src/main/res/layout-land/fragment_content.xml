@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,41 +9,41 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/content_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small"
+        android:layout_width="520dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="@dimen/small"
+        android:layout_marginStart="@dimen/small"
         android:layout_marginTop="@dimen/small"
-        android:layout_marginBottom="112dp"
-        android:paddingStart="@dimen/small"
         android:paddingEnd="@dimen/small"
+        android:paddingStart="@dimen/small"
         android:transitionName="@string/transition_name"
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/small">
+        app:cardCornerRadius="@dimen/small"
+        app:cardElevation="0dp">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small"
-            android:layout_marginBottom="@dimen/small">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/small"
+            android:layout_marginTop="@dimen/small">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/entity_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/entity_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/small"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/small"
-                    android:text="这是标题"
-                    android:textStyle="bold"
-                    android:padding="@dimen/tiny"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/primary_text_light"
+                    android:layout_marginStart="@dimen/small"
                     android:background="@android:color/white"
+                    android:padding="@dimen/tiny"
+                    android:text="这是标题"
+                    android:textColor="@android:color/primary_text_light"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_constraintLeft_creator="1"
                     tools:layout_constraintTop_creator="1" />
@@ -50,17 +51,17 @@
                 <TextView
                     android:id="@+id/entity_content"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/tiny"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/tiny"
-                    android:text="这是一段测试文本，这是第二句。"
+                    android:layout_marginStart="@dimen/tiny"
+                    android:background="@android:color/white"
                     android:lineSpacingExtra="6dp"
                     android:padding="@dimen/small"
-                    android:textSize="16sp"
+                    android:text="这是一段测试文本，这是第二句。"
                     android:textColor="@android:color/primary_text_light"
-                    android:background="@android:color/white"
-                    app:layout_constraintTop_toBottomOf="@id/entity_title"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/entity_title"
                     tools:layout_constraintLeft_creator="1"
                     tools:layout_constraintTop_creator="1" />
 
@@ -71,14 +72,15 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:background="@color/gray"
         android:elevation="@dimen/large"
+        android:layout_gravity="end|top"
         app:behavior_hideable="false"
         app:behavior_peekHeight="44dp"
-        app:layout_behavior="@string/bottom_sheet_behavior">
+        app:layout_behavior="@string/bottom_sheet_behavior" >
 
         <android.support.v7.widget.CardView
             android:id="@+id/annotation_container"
@@ -106,18 +108,17 @@
                     android:id="@+id/annotation_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/small"
-                    android:layout_marginStart="@dimen/small"
-                    android:layout_marginTop="@dimen/small"
+                    android:layout_marginTop="8dp"
                     android:background="@android:color/white"
+                    android:gravity="end"
                     android:padding="@dimen/tiny"
-                    android:text="已标注实体"
-                    android:textColor="@android:color/primary_text_light"
+                    android:text="显示已标注实体"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
                     android:textSize="18sp"
                     android:transitionName="@string/transition_name"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_constraintLeft_creator="1"
-                    tools:layout_constraintTop_creator="1" />
+                    tools:layout_constraintLeft_creator="1" />
 
                 <LinearLayout
                     android:id="@+id/table_head"
@@ -135,6 +136,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginStart="@dimen/small"
+                        android:layout_marginEnd="@dimen/small"
                         android:text="实体名称"
                         android:textColor="@android:color/black" />
 
@@ -142,6 +145,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginStart="@dimen/small"
+                        android:layout_marginEnd="@dimen/small"
                         android:text="实体类型"
                         android:textColor="@android:color/black" />
 
@@ -166,51 +171,35 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="点击文本进行标注"
-        android:layout_gravity="bottom"
-        android:gravity="center_vertical"
-        android:background="#35B6e4"
-        android:layout_marginStart="@dimen/normal"
-        android:textSize="16sp"
-        android:elevation="@dimen/tiny"
-        android:textColor="@android:color/white"
-        android:layout_marginBottom="56dp"
-        android:padding="@dimen/small"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/small"
+        android:layout_gravity="end|top"
+        android:layout_marginBottom="@dimen/small"
         android:layout_marginStart="@dimen/small"
-        android:layout_marginEnd="@dimen/small"
-        android:layout_marginBottom="@dimen/double_large"
-        android:paddingEnd="@dimen/small"
-        android:paddingStart="@dimen/small"
-        android:gravity="end|center_vertical"
-        android:layout_gravity="bottom">
+        android:layout_marginEnd="@dimen/tiny"
+        android:layout_marginTop="@dimen/small"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/large"
             android:src="@drawable/ic_finish"
-            app:fabCustomSize="@dimen/double_large"
-            app:elevation="@dimen/tiny"/>
+            android:layout_marginBottom="@dimen/small"
+            app:elevation="@dimen/tiny"
+            app:fabCustomSize="@dimen/double_large" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/tiny"
+            android:layout_marginBottom="@dimen/tiny"
             android:src="@drawable/ic_next"
-            app:fabCustomSize="@dimen/double_large"
-            app:elevation="@dimen/tiny"/>
+            app:elevation="@dimen/tiny"
+            app:fabCustomSize="@dimen/double_large" />
 
     </LinearLayout>
 

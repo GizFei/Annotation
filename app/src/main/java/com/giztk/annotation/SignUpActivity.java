@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -97,6 +98,7 @@ public class SignUpActivity extends AppCompatActivity implements TextWatcher {
                                         showError("用户名已注册");
                                     }else{
                                         onBackPressed();
+                                        Toast.makeText(getApplicationContext(), "注册成功，请使用注册的账号登陆", Toast.LENGTH_SHORT).show();
                                     }
                                 }catch (Exception e){
                                     e.printStackTrace();
