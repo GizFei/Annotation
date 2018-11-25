@@ -8,7 +8,7 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/card1"
-        android:layout_width="247dp"
+        android:layout_width="256dp"
         android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
@@ -16,7 +16,7 @@
         android:paddingEnd="@dimen/small"
         android:paddingStart="@dimen/small"
         app:cardCornerRadius="8dp"
-        app:cardElevation="1dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,7 @@
 
             <TextView
                 android:id="@+id/triple_title"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/tiny"
                 android:padding="@dimen/tiny"
@@ -45,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/tiny"
+                android:visibility="gone"
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/av_down_to_up"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -56,22 +57,21 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="@dimen/tiny"
                 android:background="#CCC"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/triple_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/triple_title">
+                app:layout_constraintTop_toTopOf="@id/triple_content">
 
             </View>
 
             <TextView
                 android:id="@+id/triple_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:ellipsize="end"
                 android:lineSpacingExtra="4dp"
-                android:maxLines="8"
-                android:padding="@dimen/tiny"
+                android:paddingBottom="@dimen/small"
                 android:scrollbarStyle="outsideInset"
                 android:scrollbars="vertical"
                 android:text="这是内容"
@@ -80,7 +80,6 @@
                 android:transitionName="@string/transition_name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/line"
                 app:layout_constraintTop_toBottomOf="@+id/triple_title"
                 app:layout_constraintVertical_bias="0.0" />
@@ -89,134 +88,132 @@
 
     </android.support.v7.widget.CardView>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="333dp"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card2"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="@dimen/small"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@id/actions"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/card1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <LinearLayout
-            android:id="@+id/ll"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="@dimen/tiny"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title">
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/tiny"
+            android:background="@android:color/white">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="实体1"
-                android:textColor="@android:color/black" />
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="@dimen/tiny"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title">
 
-            <TextView
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="实体2"
-                android:textColor="@android:color/black" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="实体1"
+                    android:textColor="@android:color/black" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="关系"
-                android:textColor="@android:color/black" />
+                <TextView
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="实体2"
+                    android:textColor="@android:color/black" />
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="关系"
+                    android:textColor="@android:color/black" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll" />
+            </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/triple_rv"
-            android:layout_width="327dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider"
-            app:layout_constraintVertical_bias="0.0">
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll" />
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/triple_rv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:layout_constraintVertical_bias="0.0">
 
-    </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
 
     <LinearLayout
         android:id="@+id/actions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="@dimen/small"
+        android:layout_marginBottom="@dimen/small"
+        android:layout_marginStart="@dimen/small"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal"
         android:paddingEnd="@dimen/small"
         android:paddingStart="@dimen/small"
+        android:elevation="@dimen/large"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/card1"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_new"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/normal"
-            android:layout_marginEnd="@dimen/tiny"
-            android:layout_marginStart="@dimen/tiny"
+            android:layout_marginEnd="@dimen/large"
             android:src="@drawable/ic_add"
             app:elevation="@dimen/tiny"
-            app:fabCustomSize="@dimen/large" />
+            app:fabCustomSize="@dimen/double_large" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/normal"
-            android:layout_marginEnd="@dimen/tiny"
-            android:layout_marginStart="@dimen/tiny"
+            android:layout_marginEnd="@dimen/large"
             android:src="@drawable/ic_finish"
             app:elevation="@dimen/tiny"
-            app:fabCustomSize="@dimen/large" />
+            app:fabCustomSize="@dimen/double_large" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/normal"
-            android:layout_marginEnd="@dimen/tiny"
-            android:layout_marginStart="@dimen/tiny"
             android:src="@drawable/ic_next"
             app:elevation="@dimen/tiny"
-            app:fabCustomSize="@dimen/large" />
+            app:fabCustomSize="@dimen/double_large" />
 
     </LinearLayout>
 

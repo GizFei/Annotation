@@ -70,7 +70,16 @@
 
     </android.support.v7.widget.CardView>
 
+    <View
+        android:id="@+id/bottom_sheet_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#7d000000"
+        android:visibility="gone"
+        android:elevation="20dp"/>
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
