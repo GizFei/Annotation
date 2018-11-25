@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,6 +62,8 @@ public class ContentFragment extends Fragment {
     private CardView mEntityContainer;
     private FloatingActionButton mNextFab;
     private FloatingActionButton mFinishFab;
+    private NestedScrollView mBottomSheet;
+    private View mBottomSheetScrim;
     private RecyclerView mAnnotationRv;
     private EntityAdapter mEntityAdapter;
 
@@ -91,6 +95,8 @@ public class ContentFragment extends Fragment {
         mEntityContainer = view.findViewById(R.id.content_container);
         mNextFab = view.findViewById(R.id.fab_next);
         mFinishFab = view.findViewById(R.id.fab_finish);
+        mBottomSheet = view.findViewById(R.id.bottom_sheet);
+        mBottomSheetScrim = view.findViewById(R.id.bottom_sheet_scrim);
         mAnnotationRv = view.findViewById(R.id.annotation_rv);
         mAnnotationRv.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateEntityRv();
@@ -110,6 +116,36 @@ public class ContentFragment extends Fragment {
         else {
             queryContent();
         }
+
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(mBottomSheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            /*
+            STATE_DRAGGING: 表示用户正在向上或者向下拖动 Bottom Sheet
+            STATE_SETTLING: 视图从脱离手指自由滑动到最终停下的这一小段时间
+            STATE_EXPANDED: 表示视图处于完全展开的状态
+            STATE_COLLAPSED: 表示视图处于默认的折叠状体
+            STATE_HIDDEN: 表示视图被隐藏
+             */
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                // Log.d(TAG, "bottom sheet behavior " + String.valueOf(i));
+                if(i == BottomSheetBehavior.STATE_COLLAPSED){
+                    mBottomSheetScrim.setVisibility(View.GONE);
+                }else if(i == BottomSheetBehavior.STATE_DRAGGING){
+                    mBottomSheetScrim.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) { }
+        });
+
+        mBottomSheetScrim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
 
         mContentText.setOnClickListener(new View.OnClickListener() {
             @Override

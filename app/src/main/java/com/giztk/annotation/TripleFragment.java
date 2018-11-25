@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -286,6 +287,10 @@ public class TripleFragment extends Fragment {
      * 测量文本高度
      */
     private void measureContentHeight(){
+        // 横屏不测量
+        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            return;
+        }
         ViewTreeObserver observer = mTripleContentTv.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
