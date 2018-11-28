@@ -51,7 +51,11 @@ public class Triple {
                 leftEntity = object.getString("left_entity");
                 rightEntity = object.getString("right_entity");
                 relationID = object.getInt("relation_id");
-                status = -2; // 表示还没判断，为1
+                if(object.has("status")){
+                    status = object.getInt("status"); // 表示判断过了
+                }else{
+                    status = -2; // 表示还没判断，为-2
+                }
                 original = true;
             } catch (JSONException e) {
                 e.printStackTrace();
