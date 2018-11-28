@@ -378,7 +378,7 @@ public class TripleFragment extends Fragment {
         if (mAdapter != null) {
             mAdapter.saveStates(outState);
         }
-        outState.putString(Key_Triples, mTripleAnnotation.toJSONString());
+        outState.putString(Key_Triples, mTripleAnnotation.rotateToString());
     }
 
     @Override
