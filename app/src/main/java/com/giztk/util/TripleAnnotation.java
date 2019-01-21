@@ -35,7 +35,12 @@ public class TripleAnnotation {
             mSentContent = tripleObject.getString(TRIPLE_SENT_CTX);
             JSONArray triples = tripleObject.getJSONArray(TRIPLE_TRIPLES);
             for(int i = 0; i < triples.length(); i++){
-                Triple t = new Triple(triples.getJSONObject(i), true);
+                Triple t;
+                if(triples.getJSONObject(i).has("original")){
+                    t = new Triple(triples.getJSONObject(i), triples.getJSONObject(i).getBoolean("original"));
+                }else{
+                    t = new Triple(triples.getJSONObject(i), true);
+                }
                 mTriples.add(t);
             }
         }catch (Exception e){
@@ -117,6 +122,27 @@ public class TripleAnnotation {
             JSONArray array = new JSONArray();
             for(Triple triple: mTriples){
                 array.put(triple.toJSONObject());
+            }
+            result.put(TRIPLE_TRIPLES, array);
+            return result.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String rotateToString(){
+        try {
+            JSONObject result = new JSONObject();
+            result.put(TRIPLE_DOC_ID, mDocId);
+            result.put(TRIPLE_SENT_ID, mSentId);
+            result.put(TRIPLE_TITLE, mTitle);
+            result.put(TRIPLE_SENT_CTX, mSentContent);
+            JSONArray array = new JSONArray();
+            for(Triple triple: mTriples){
+                JSONObject object = triple.toJSONObject();
+                object.put("original", triple.isOriginal());
+                array.put(object);
             }
             result.put(TRIPLE_TRIPLES, array);
             return result.toString();
